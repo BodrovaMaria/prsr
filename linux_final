@@ -73,12 +73,12 @@ def clicked():
                 topnews_path = '/home/maria/parser/_topnews_'
             else:
                 os.mkdir("/home/maria/parser/_topnews_")
-                mainnews_path = '/home/maria/parser/_topnews_'
+                topnews_path = '/home/maria/parser/_topnews_'
             if os.path.exists("/home/maria/parser/_mainnews_"):
                 mainnews_path = '/home/maria/parser/_mainnews_'
             else:
                 os.mkdir("/home/maria/parser/_mainnews_")
-                topnews_path = '/home/maria/parser/_mainnews_'
+                mainnews_path = '/home/maria/parser/_mainnews_'
             if os.path.exists("/home/maria/parser/_othnews_"):
                 othnews_path = '/home/maria/parser/_othnews_'
             else:

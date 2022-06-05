@@ -120,7 +120,7 @@ def clicked():
                                 my_file.write(p.text)
                             if p.find('p') is not None:
                                 my_file.write(p.text)
-                            #o = o + 1
+                           
                         else:
                             continue
 
@@ -225,7 +225,7 @@ def clicked():
                                 my_file.write(p.text)
                             if p.find('p') is not None:
                                 my_file.write(p.text)
-                            #o = o + 1
+                           
 
                     news_page = None
                     news_link = None
@@ -295,7 +295,7 @@ def clicked():
                                 my_file.write(b.text)
                             if b.find('p') is not None:
                                 my_file.write(b.text)
-                            #o = o + 1
+                           
                         else:
                             continue
 

@@ -181,7 +181,7 @@ def clicked():
             fullpath_othnews = os.path.join(othnews_path, format_date_time)
             os.mkdir(fullpath_othnews)
 
-            for data in oth_all:  # пока нет кода для strong class
+            for data in oth_all:
                 if data.find(name='h4') is not None:
                     news_block = data
                     link = data.find('a')

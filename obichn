@@ -1,8 +1,5 @@
 import math
 import os
-import sys
-import warnings
-
 
 import docx
 import numpy as np
@@ -12,18 +9,18 @@ import matplotlib.pyplot as plt
 from pyparsing import col
 from sklearn.manifold import TSNE
 
-text_path=input("Enter directory: ")
-text_count = 1800
+teksts_path=input("Enter directory: ")
+teksts_number=int(input("Enter number of texts: "))
 
-# собираем словарь
-allwords = [''] * text_count
-a = 0
+#собираем словарь
+allwords=['']*teksts_number
+a=0
 for p in range(9):
     for d in range(200):
         tokens = []
-        full_text_path = os.path.join(text_path, str(p + 1) + '\\' + str(d + 1) + '.docx')
+        full_teksts_path = os.path.join(teksts_path, str(p + 1) + '\\' + str(d + 1) + '.docx')
         text = ''
-        f = docx.Document(full_text_path)
+        f = docx.Document(full_teksts_path)
         for paragraph in f.paragraphs:
             text += paragraph.text + ' '
         for token in text.split():
@@ -32,6 +29,7 @@ for p in range(9):
                 tokens.append(token)
         allwords[a] = tokens
         a = a + 1
+
 bvoc=[]
 voc=[]
 for i in allwords:
@@ -40,10 +38,11 @@ for i in bvoc:
     if i not in voc:
         voc.append(i)
 voclen=len(voc)
+
 #tf-idf
 #обычная модель
-tf=[0]*text_count
-for i in range (text_count):
+tf=[0]*teksts_number
+for i in range (teksts_number):
     tf[i]=[0]*voclen
 for i in range (len(tf)):
     for j in range (len(tf[i])):
@@ -58,16 +57,14 @@ for j in range(len(tf[0])):
     for i in range(len(tf)):
         if tf[i][j]:
             docswword = docswword + 1
-    idf[j] = math.log(text_count / docswword, 10)
+    idf[j] = math.log(teksts_number / docswword, 10)
 
-tf_idf=[0]*text_count
-for i in range (text_count):
+tf_idf=[0]*teksts_number
+for i in range (teksts_number):
     tf_idf[i]=[0]*voclen
 for i in range (len(tf_idf)):
     for j in range (len(tf_idf[i])):
         tf_idf[i][j]=tf[i][j] * idf[i]
-
-
 X = np.array(tf_idf)
 colors = cycle("bgrmckbgrmckbgrymckbgrmk")
 

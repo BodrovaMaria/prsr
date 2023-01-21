@@ -1,0 +1,87 @@
+import math
+import os
+import sys
+import warnings
+
+
+import docx
+import numpy as np
+from fcmeans import FCM
+from itertools import cycle
+import matplotlib.pyplot as plt
+from pyparsing import col
+from sklearn.manifold import TSNE
+
+text_path=input("Enter directory: ")
+text_count = 1800
+
+# собираем словарь
+allwords = [''] * text_count
+a = 0
+for p in range(9):
+    for d in range(200):
+        tokens = []
+        full_text_path = os.path.join(text_path, str(p + 1) + '\\' + str(d + 1) + '.docx')
+        text = ''
+        f = docx.Document(full_text_path)
+        for paragraph in f.paragraphs:
+            text += paragraph.text + ' '
+        for token in text.split():
+            if token:
+                token = token.strip()
+                tokens.append(token)
+        allwords[a] = tokens
+        a = a + 1
+bvoc=[]
+voc=[]
+for i in allwords:
+    bvoc.extend(i)
+for i in bvoc:
+    if i not in voc:
+        voc.append(i)
+voclen=len(voc)
+#tf-idf
+#обычная модель
+tf=[0]*text_count
+for i in range (text_count):
+    tf[i]=[0]*voclen
+for i in range (len(tf)):
+    for j in range (len(tf[i])):
+        if (allwords[i].count(voc[j])):
+            tf[i][j]=allwords[i].count(voc[j]) / len(allwords[i])
+        else:
+            tf[i][j]=0.0
+
+idf=[0]*voclen
+for j in range(len(tf[0])):
+    docswword=0
+    for i in range(len(tf)):
+        if tf[i][j]:
+            docswword = docswword + 1
+    idf[j] = math.log(text_count / docswword, 10)
+
+tf_idf=[0]*text_count
+for i in range (text_count):
+    tf_idf[i]=[0]*voclen
+for i in range (len(tf_idf)):
+    for j in range (len(tf_idf[i])):
+        tf_idf[i][j]=tf[i][j] * idf[i]
+
+
+X = np.array(tf_idf)
+colors = cycle("bgrmckbgrmckbgrymckbgrmk")
+
+fcm = FCM(n_clusters=5, random_state=1000, max_iter=1000)
+fcm.fit(X)
+fcm_centers = fcm.centers
+fcm_labels = fcm.predict(X)
+Y = TSNE(n_components=2, random_state=0, perplexity=15, init='pca').fit_transform(X)
+for k, col in zip(range(len(fcm_centers)), colors):
+    class_members = fcm_labels == k
+    plt.plot(Y[class_members, 0], Y[class_members, 1], col + ".")
+    plt.title('Обычная модель\nКоличество кластеров = 5 \nКоличество итераций = 1000')
+
+
+
+plt.show()
+
